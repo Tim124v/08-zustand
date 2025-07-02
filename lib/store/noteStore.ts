@@ -2,10 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CreateNoteRequest } from "@/types/note";
 
-const initialDraft = {
+const initialDraft: CreateNoteRequest = {
   title: "",
   content: "",
-  tag: "Todo" as const,
+  tag: "Todo",
 };
 
 interface NoteStore {

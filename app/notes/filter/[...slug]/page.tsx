@@ -9,14 +9,32 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const resolvedParams = await params;
   const tag = resolvedParams.slug?.[0] || "All";
+  
+  // URL encoding для специальных символов
+  const encodedTag = encodeURIComponent(tag);
+  
+  // Более описательные тексты
+  const getDescription = (tagName: string) => {
+    if (tagName === "All") {
+      return "Browse and manage all your notes in one convenient location using NoteHub";
+    }
+    return `Browse and manage your ${tagName.toLowerCase()} notes in NoteHub`;
+  };
+
+  const getTitle = (tagName: string) => {
+    if (tagName === "All") {
+      return "All Notes | NoteHub";
+    }
+    return `${tagName} Notes | NoteHub`;
+  };
 
   return {
-    title: `Notes - ${tag} | NoteHub`,
-    description: `Browse and manage your ${tag.toLowerCase()} notes in NoteHub`,
+    title: getTitle(tag),
+    description: getDescription(tag),
     openGraph: {
-      title: `Notes - ${tag} | NoteHub`,
-      description: `Browse and manage your ${tag.toLowerCase()} notes in NoteHub`,
-      url: `https://notehub.com/notes/filter/${tag}`,
+      title: getTitle(tag),
+      description: getDescription(tag),
+      url: `https://notehub.com/notes/filter/${encodedTag}`,
       siteName: "NoteHub",
       images: [
         {

@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createNote } from "@/lib/api";
 import { CreateNoteRequest } from "@/types/note";
 import { useNoteStore } from "@/lib/store/noteStore";
@@ -16,12 +16,6 @@ function NoteForm({ onClose }: NoteFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
-
-  const [formData, setFormData] = useState<CreateNoteRequest>({
-    title: draft.title,
-    content: draft.content,
-    tag: draft.tag,
-  });
 
   const [errors, setErrors] = useState<Partial<CreateNoteRequest>>({});
 
@@ -38,21 +32,13 @@ function NoteForm({ onClose }: NoteFormProps) {
     },
   });
 
-  useEffect(() => {
-    setFormData(draft);
-  }, [draft]);
-
-
-
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = e.target;
-    const updatedData = { ...formData, [name]: value };
-    setFormData(updatedData);
-    setDraft(updatedData);
+    setDraft({ [name]: value } as Partial<CreateNoteRequest>);
   };
 
   const validateFormData = (data: CreateNoteRequest): boolean => {
@@ -74,18 +60,14 @@ function NoteForm({ onClose }: NoteFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleFormAction = async (formData: FormData) => {
-    const noteData: CreateNoteRequest = {
-      title: formData.get("title") as string,
-      content: formData.get("content") as string,
-      tag: formData.get("tag") as CreateNoteRequest["tag"],
-    };
-
-    if (!validateFormData(noteData)) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateFormData(draft)) {
       return;
     }
 
-    mutation.mutate(noteData);
+    mutation.mutate(draft);
   };
 
   const handleCancel = () => {
@@ -97,14 +79,14 @@ function NoteForm({ onClose }: NoteFormProps) {
   };
 
   return (
-    <form className={css.form} action={handleFormAction}>
+    <form className={css.form} onSubmit={handleSubmit}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
           id="title"
           name="title"
           type="text"
-          value={formData.title}
+          value={draft.title}
           onChange={handleInputChange}
           className={css.input}
         />
@@ -117,7 +99,7 @@ function NoteForm({ onClose }: NoteFormProps) {
           id="content"
           name="content"
           rows={8}
-          value={formData.content}
+          value={draft.content}
           onChange={handleInputChange}
           className={css.textarea}
         />
@@ -129,7 +111,7 @@ function NoteForm({ onClose }: NoteFormProps) {
         <select
           id="tag"
           name="tag"
-          value={formData.tag}
+          value={draft.tag}
           onChange={handleInputChange}
           className={css.select}
         >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes, FetchNotesResponse } from "@/lib/api";
@@ -19,7 +19,6 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const isInitialMount = useRef(true);
 
   const tagParam = tag ? tag : undefined;
 
@@ -32,11 +31,7 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
   });
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      setPage(1);
-    }
+    setPage(1);
   }, [tag]);
 
   useEffect(() => {
@@ -51,6 +46,7 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
+    setPage(1); // Немедленно сбрасываем страницу при изменении поиска
   };
 
   const showLoading = isLoading && !data?.notes;
