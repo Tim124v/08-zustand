@@ -12,7 +12,7 @@ import styles from "./NotesPage.module.css";
 
 interface NotesClientProps {
   initialNotes: FetchNotesResponse;
-  tag?: string;
+  tag: string;
 }
 
 export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
@@ -20,7 +20,7 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  const tagParam = tag ? tag : undefined;
+  const tagParam = tag === "All" ? undefined : tag;
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["notes", page, tagParam, debouncedSearchQuery],
@@ -36,7 +36,7 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    setPage(1); // Немедленно сбрасываем страницу при изменении поиска
+    setPage(1);
   };
 
   const showLoading = isLoading && !data?.notes;

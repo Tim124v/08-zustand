@@ -58,5 +58,5 @@ export default async function NotesByTagPage({
   const tagParam = tag === "All" ? undefined : tag;
 
   const initialNotes = await fetchNotes(undefined, 1, tagParam);
-  return <NotesClient initialNotes={initialNotes} tag={tagParam} />;
+  return <NotesClient initialNotes={initialNotes} tag={tag} />;
 }
