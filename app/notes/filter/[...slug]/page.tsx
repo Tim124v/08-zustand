@@ -10,10 +10,9 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const tag = resolvedParams.slug?.[0] || "All";
   
-  // URL encoding для специальных символов
   const encodedTag = encodeURIComponent(tag);
   
-  // Более описательные тексты
+  
   const getDescription = (tagName: string) => {
     if (tagName === "All") {
       return "Browse and manage all your notes in one convenient location using NoteHub";

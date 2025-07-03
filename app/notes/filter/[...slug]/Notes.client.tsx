@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes, FetchNotesResponse } from "@/lib/api";
@@ -24,21 +24,11 @@ export default function NotesClient({ initialNotes, tag }: NotesClientProps) {
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["notes", page, tagParam, debouncedSearchQuery],
-    queryFn: () => fetchNotes(page, debouncedSearchQuery, tagParam),
+    queryFn: () => fetchNotes(debouncedSearchQuery, page, tagParam),
     placeholderData: keepPreviousData,
     initialData: initialNotes,
     retry: false,
   });
-
-  useEffect(() => {
-    setPage(1);
-  }, [tag]);
-
-  useEffect(() => {
-    if (debouncedSearchQuery !== "") {
-      setPage(1);
-    }
-  }, [debouncedSearchQuery]);
 
   const handlePageChange = (page: number) => {
     setPage(page);

@@ -15,8 +15,8 @@ export interface FetchNotesResponse {
 }
 
 export const fetchNotes = async (
-  page: number = 1,
   query?: string,
+  page: number = 1,
   tag?: string
 ): Promise<FetchNotesResponse> => {
   try {
